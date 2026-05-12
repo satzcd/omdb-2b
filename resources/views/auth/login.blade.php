@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
@@ -45,13 +45,13 @@
             </div>
 
             <div class="card card-primary">
-              <div class="card-header"><h4>{{__('messages.login') }}</h4></div>
+              <div class="card-header"><h4>{{__('login') }}</h4></div>
 
               <div class="card-body">
                 <form method="POST" action="{{ route('signin')}}" class="needs-validation" novalidate="">
                     @csrf
                   <div class="form-group">
-                    <label for="email">{{__('messages.Email') }}</label>
+                    <label for="email">{{__('Email') }}</label>
                     <input type="email" class="form-control" name="email" tabindex="1">
                     @error('email')
                         <span class="text-sm text-danger">{{ $message }}</span>
@@ -60,7 +60,7 @@
 
                   <div class="form-group">
                     <div class="d-block">
-                    	<label for="password" class="control-label">{{__('messages.Password') }}</label>
+                    	<label for="password" class="control-label">{{__('Password') }}</label>
                     </div>
                     <input type="password" class="form-control" name="password" tabindex="2">
                     @error('password')
@@ -70,7 +70,7 @@
 
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-                      {{__('messages.login') }}
+                      {{__('login') }}
                     </button>
                   </div>
                 </form>
@@ -78,7 +78,7 @@
               </div>
             </div>
             <div class="mt-5 text-muted text-center">
-              {{__('messages.Dont have an account?') }}<a href="{{ url('/register') }}">{{__('messages.create one') }}</a>
+              {{__('Dont have an account?') }}<a href="{{ url('/register') }}">{{__('create one') }}</a>
             </div>
             <div class="simple-footer">
               Copyright &copy; Stisla <span id="year"></span>
