@@ -118,32 +118,129 @@ document.addEventListener('DOMContentLoaded', function () {
 
         button.addEventListener('click', function () {
 
-            if (!confirm('Hapus dari favorite?')) {
-                return;
-            }
+            const imdbId = this.dataset.imdb;
 
-            fetch('/controlpanel/favorites/' + this.dataset.imdb, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
+            Swal.fire({
+                title: 'Hapus Favorite?',
+                text: 'Film akan dihapus dari daftar favorite.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
 
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message);
+                if (!result.isConfirmed) {
+                    return;
                 }
 
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Terjadi kesalahan.');
+                fetch('/controlpanel/favorites/' + imdbId, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.success) {
+
+                        Swal.fire({
+                            text: data.message,
+                            icon: 'success',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+
+                    } else {
+
+                        Swal.fire({
+                            text: data.message,
+                            icon: 'warning',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                    }
+
+                })
+                .catch(error => {
+
+                    console.error(error);
+
+                    Swal.fire({
+                        text: 'Terjadi kesalahan.',
+                        icon: 'error',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
+                });
+
             });
 
+        });
+
+    });
+
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const btn = document.getElementById('favorite-btn');
+
+    if(!btn) return;
+
+    btn.addEventListener('click', function () {
+
+        fetch('{{ route("favorites.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                imdb_id: btn.dataset.imdb,
+                title: btn.dataset.title,
+                year: btn.dataset.year,
+                poster: btn.dataset.poster,
+                type: btn.dataset.type
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            Swal.fire({
+                text: data.message,
+                icon: data.success ? 'success' : 'warning',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+
+            if(data.success){
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
         });
 
     });

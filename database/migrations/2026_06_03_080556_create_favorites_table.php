@@ -15,7 +15,7 @@ return new class extends Migration
     $table->id();
 
     $table->unsignedBigInteger('user_id');
-    $table->string('imdb_id')->unique();
+    $table->string('imdb_id');
 
     $table->string('title');
     $table->string('year')->nullable();

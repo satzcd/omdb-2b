@@ -191,6 +191,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         button.addEventListener('click', function () {
 
+            const btn = this;
+
             fetch('{{ route("favorites.store") }}', {
                 method: 'POST',
                 headers: {
@@ -199,29 +201,57 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    imdb_id: this.dataset.imdb,
-                    title: this.dataset.title,
-                    year: this.dataset.year,
-                    poster: this.dataset.poster,
-                    type: this.dataset.type
+                    imdb_id: btn.dataset.imdb,
+                    title: btn.dataset.title,
+                    year: btn.dataset.year,
+                    poster: btn.dataset.poster,
+                    type: btn.dataset.type
                 })
             })
             .then(response => response.json())
             .then(data => {
 
                 if (data.success) {
-                    alert(data.message);
 
-                    this.classList.remove('btn-outline-danger');
-                    this.classList.add('btn-danger');
+                    Swal.fire({
+                        text: data.message,
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
+                    btn.classList.remove('btn-outline-danger');
+                    btn.classList.add('btn-danger');
+
                 } else {
-                    alert(data.message);
+
+                    Swal.fire({
+                        text: data.message,
+                        icon: 'warning',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
                 }
 
             })
             .catch(error => {
+
                 console.error(error);
-                alert('Terjadi kesalahan.');
+
+                Swal.fire({
+                    text: 'Terjadi kesalahan.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
             });
 
         });

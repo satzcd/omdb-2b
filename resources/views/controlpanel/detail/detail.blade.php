@@ -142,4 +142,65 @@
     </section>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const btn = document.getElementById('favorite-btn');
+
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+
+        fetch('{{ route("favorites.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                imdb_id: btn.dataset.imdb,
+                title: btn.dataset.title,
+                year: btn.dataset.year,
+                poster: btn.dataset.poster,
+                type: btn.dataset.type
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            Swal.fire({
+                icon: data.success ? 'success' : 'warning',
+                text: data.message,
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+            });
+
+            if (data.success) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+
+            Swal.fire({
+                icon: 'error',
+                text: 'Terjadi kesalahan.',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        });
+
+    });
+
+});
+</script>
+
 @include("controlpanel.components.footer")
